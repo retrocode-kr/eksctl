@@ -1,0 +1,48 @@
+# Test binary, build with `go test -c`
+*.test
+
+# Release config file backups
+.goreleaser.brew.combined.yml
+
+# Locally built binaries
+eksctl
+eksctl-integration-test
+
+# Phony directory used to generate mocks
+vendor
+
+# Mkdocs site
+userdocs/site
+
+# Do not add temporary files here
+# use ~/.config/git/ignore instead
+
+# Test coverage output
+coverage.out
+
+# Test results
+test-results
+
+integration/kubeconfig-*
+
+# Docker Image ID file and docker intermediate files
+# Build image context and Docker Image ID file
+*.iid
+build/docker/
+
+# direnv's files:
+.envrc
+
+# Snaps
+eksctl_*_*.snap
+
+userdocs/src/usage/schema.json
+
+# Goreleaser
+dist/
+
+# IDEA directory
+.idea/
+
+# Debug logs
+logs/*
