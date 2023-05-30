@@ -1,0 +1,52 @@
+---
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+metadata:
+  name: EV-DEV-EKS-v1-24
+  region: ap-northeast-2
+  version: "1.24"
+  tags:
+    karpenter.sh/discovery: EV-DEV-EKS-v1-24
+
+vpc:
+  id: "vpc-04210a9ef98d7f46e"
+  subnets:
+    private:
+      ap-northeast-2a: { id: subnet-045942cfbf21f479b}
+      ap-northeast-2c: { id: subnet-063e37dbe1e8bead2}
+    public:
+      ap-northeast-2a: { id: subnet-0bb7a3ae3d7ecd873}
+      ap-northeast-2c: { id: subnet-0432893d7f13db5dd}
+
+iam:
+  withOIDC: true
+  serviceAccounts:
+  - metadata:
+      name: karpenter
+      namespace: karpenter
+    roleName: EV-DEV-EKS-v1-24-karpenter
+    attachPolicyARNs:
+    - arn:aws:iam::116234893218:policy/KarpenterControllerPolicy-EV-DEV-EKS-v1-24
+    roleOnly: true
+
+iamIdentityMappings:
+- arn: "arn:aws:iam::116234893218:role/KarpenterNodeRole-EV-DEV-EKS-v1-24"
+  username: system:node:{{EC2PrivateDNSName}}
+  groups:
+  - system:bootstrappers
+  - system:nodes
+
+managedNodeGroups:
+- instanceType: m5.large
+  amiFamily: AmazonLinux2
+  name: EV-DEV-EKS-v1-24-ng
+  desiredCapacity: 2
+  minSize: 1
+  maxSize: 5
+
+cloudWatch:
+    clusterLogging:
+        # enable specific types of cluster control plane logs
+        enableTypes: ["audit", "authenticator", "controllerManager"]
+        # all supported types: "api", "audit", "authenticator", "controllerManager", "scheduler"
+        # supported special values: "*" and "all"

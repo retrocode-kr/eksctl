@@ -1,0 +1,45 @@
+# An example of ClusterConfig object with custom VPC IPv4 CIDR,
+# and auto-allocated IPv6 CIDRs for all subnets; also without
+# any nodegroups:
+---
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: EV-DEV-EKS-v1-26
+  region: ap-northeast-2
+  version: "1.26"
+
+vpc:
+  id: "vpc-04210a9ef98d7f46e"
+  subnets:
+    private:
+      ap-northeast-2a: { id: subnet-045942cfbf21f479b}
+      ap-northeast-2c: { id: subnet-063e37dbe1e8bead2}
+    public:
+      ap-northeast-2a: { id: subnet-0bb7a3ae3d7ecd873}
+      ap-northeast-2c: { id: subnet-0432893d7f13db5dd}
+  # disable public access to endpoint and only allow private access
+  clusterEndpoints:
+    publicAccess: true
+    privateAccess: true
+
+iam:
+  withOIDC: true
+
+managedNodeGroups:
+- instanceType: m5.large
+  amiFamily: AmazonLinux2
+  name: EV-DEV-EKS-v1-26-ng
+  desiredCapacity: 1
+  minSize: 1
+  maxSize: 1
+  privateNetworking: true
+
+cloudWatch:
+    clusterLogging:
+        # enable specific types of cluster control plane logs
+        #enableTypes: ["audit", "authenticator", "controllerManager"]
+        enableTypes: ["*"]
+        # all supported types: "api", "audit", "authenticator", "controllerManager", "scheduler"
+        # supported special values: "*" and "all"
